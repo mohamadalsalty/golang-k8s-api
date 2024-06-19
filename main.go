@@ -2,32 +2,42 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"net/http"
 	"os"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/rest"
 )
 
 func main() {
-
-	kubeconfigPath := os.Getenv("KUBECONFIG_PATH")
-	if kubeconfigPath == "" {
-		kubeconfigPath = "/home/mohamad/.kube/config"
+	// Get environment variables
+	tokenPath := os.Getenv("K8S_TOKEN_PATH")
+	if tokenPath == "" {
+		tokenPath = "secret.txt"
 	}
-	kubeconfig := flag.String("kubeconfig", kubeconfigPath, "kubeconfig path")
-	flag.Parse()
 
-	// Use the current context in kubeconfig
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	host := os.Getenv("K8S_API_HOST")
+	if host == "" {
+		host = "https://192.168.49.2:8443"
+	}
+
+	// Read the service account token
+	token, err := os.ReadFile(tokenPath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error building kubeconfig: %s\n", err.Error())
-		os.Exit(1)
+		fmt.Printf("Error reading token: %s\n", err.Error())
+		return
 	}
 
+	// Create a new config using the token
+	config := &rest.Config{
+		Host:        host,
+		BearerToken: string(token),
+		TLSClientConfig: rest.TLSClientConfig{
+			Insecure: true, // Disable SSL verification (use only for testing)
+		},
+	}
 	// Create the clientset
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
