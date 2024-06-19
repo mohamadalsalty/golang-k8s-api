@@ -28,21 +28,13 @@ Este é um projeto simples em Golang para criar um api básico que lista informa
    go build -o k8s-api
    ```
 
-3. Execute a api:
+3. Configure as variáveis de ambiente e execute a api:
 
    ```
+   export K8S_API_HOST=https://<ip-do-k8s>:<porta>
+   export K8S_TOKEN_PATH=/caminho/para/seu/token.txt
    ./k8s-api
    ```
 
    A api estará disponível em `http://localhost:8080`.
-
-## Configuração do Kubeconfig
-
-Por padrão, a api usa o arquivo de configuração do Kubernetes localizado em `$HOME/.kube/config`. Você pode especificar um caminho diferente usando a flag `-kubeconfig`.
-
-Exemplo:
-
-```
-./k8s-api -kubeconfig=/caminho/para/seu/kubeconfig
-```
 
