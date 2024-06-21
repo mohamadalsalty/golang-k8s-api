@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_TAG: ${{ secrets.DOCKER_USERNAME }}/k8s-dash:${{ github.run_number }}-$(date +%s)
+      IMAGE: ${{ secrets.DOCKER_USERNAME }}/k8s-dash
 
     steps:
     - uses: actions/checkout@v4
@@ -24,16 +24,15 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker buildx build --platform linux/amd64 -t $IMAGE_TAG .
-        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+        docker buildx build --platform linux/amd64 -t $IMAGE:$(date +%s) .
 
     - name: Scan Docker image with Trivy
       uses: aquasecurity/trivy-action@0.20.0
       with:
-        image-ref: ${{ env.IMAGE_TAG }}
+        image-ref: ${{ env.IMAGE:$(date +%s) }}
 
     - name: Push Docker image
-      run: docker push $IMAGE_TAG
+      run: docker push $IMAGE:$(date +%s)
 
     - name: Print the image tag
-      run: echo "Docker image tag is $IMAGE_TAG"
+      run: echo "Docker image tag is $IMAGE:$(date +%s)"
