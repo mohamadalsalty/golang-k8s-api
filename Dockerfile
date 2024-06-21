@@ -9,8 +9,6 @@ RUN CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags="-w -s" -o main .
 
 FROM scratch
 
-RUN apk update && apk add --no-cache ca-certificates
-
 WORKDIR /app
 
 COPY --from=builder /app/main /app/main
