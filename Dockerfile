@@ -15,8 +15,6 @@ COPY --from=builder /app/main /app/main
 
 ENV KUBECONFIG=/home/app/.kube/config
 
-RUN chmod +x /app/main
-
 EXPOSE 8080
 
 RUN adduser -D app
