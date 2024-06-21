@@ -35,7 +35,7 @@ jobs:
         echo "::set-env name=IMAGE_TAG::$IMAGE_TAG"
 
     - name: Scan Docker image with Trivy
-      uses: aquasecurity/trivy-action@v2
+      uses: aquasecurity/trivy-action@0.20.0
       with:
         image-ref: ${{ secrets.DOCKER_USERNAME }}/${{ steps.repo_name.outputs.name }}:${{ github.sha }}
 
