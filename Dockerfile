@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN CGO_ENABLED=0 go build -ldflags="-w -s" -o main .
+RUN CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags="-w -s" -o main .
 
 FROM alpine:3.20.0
 
