@@ -24,4 +24,4 @@ EXPOSE 8080
 RUN adduser -D app
 USER app
 
-CMD ["/app/main"]
+ENTRYPOINT ["/app/main"]
