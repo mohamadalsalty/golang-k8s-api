@@ -13,7 +13,7 @@ RUN apk update && apk add --no-cache ca-certificates
 
 WORKDIR /app
 
-COPY --from=builder /app/main .
+COPY --from=builder /app/main /app/main
 
 ENV KUBECONFIG=/home/app/.kube/config
 
