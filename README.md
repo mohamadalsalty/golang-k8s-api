@@ -7,8 +7,8 @@ Este é um projeto simples em Golang para criar um api básico que lista informa
 - **/clusterinfo**: Retorna informações sobre o cluster, incluindo nome e versão.
 - **/namespaces**: Lista todos os namespaces no cluster.
 - **/nodes**: Lista todos os nós no cluster.
-- **/pods/{namespace}**: Lista todos os pods no namespace especificado (padrão: 'default').
-- **/deployments/{namespace}**: Lista todos os deployments no namespace especificado (padrão: 'default').
+- **/pods/{namespace}**: Lista todos os pods no namespace especificado (padrão: '*').
+- **/deployments/{namespace}**: Lista todos os deployments no namespace especificado (padrão: '*').
 
 ## Requisitos
 
