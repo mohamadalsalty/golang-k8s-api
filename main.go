@@ -93,19 +93,29 @@ func main() {
 		// Extract the namespace from the request URL
 		namespace := r.URL.Path[len("/pods/"):]
 		if namespace == "" {
-			namespace = "default" // Default to "default" namespace if no namespace is provided
-		}
+			// List pods in all namespaces
+			pods, err := clientset.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error listing pods in all namespaces: %s", err.Error()), http.StatusInternalServerError)
+				return
+			}
 
-		// List pods in the specified namespace
-		pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Error listing pods in namespace %s: %s", namespace, err.Error()), http.StatusInternalServerError)
-			return
-		}
+			// Print pod names
+			for _, pod := range pods.Items {
+				fmt.Fprintf(w, "Pod: %s\n", pod.Name)
+			}
+		} else {
+			// List pods in the specified namespace
+			pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error listing pods in namespace %s: %s", namespace, err.Error()), http.StatusInternalServerError)
+				return
+			}
 
-		// Print pod names
-		for _, pod := range pods.Items {
-			fmt.Fprintf(w, "Pod: %s\n", pod.Name)
+			// Print pod names
+			for _, pod := range pods.Items {
+				fmt.Fprintf(w, "Pod: %s\n", pod.Name)
+			}
 		}
 	})
 
@@ -114,19 +124,29 @@ func main() {
 		// Extract the namespace from the request URL
 		namespace := r.URL.Path[len("/deployments/"):]
 		if namespace == "" {
-			namespace = "default" // Default to "default" namespace if no namespace is provided
-		}
+			// List deployments in all namespaces
+			deployments, err := clientset.AppsV1().Deployments("").List(context.TODO(), metav1.ListOptions{})
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error listing deployments in all namespaces: %s", err.Error()), http.StatusInternalServerError)
+				return
+			}
 
-		// List deployments in the specified namespace
-		deployments, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
-		if err != nil {
-			http.Error(w, fmt.Sprintf("Error listing deployments in namespace %s: %s", namespace, err.Error()), http.StatusInternalServerError)
-			return
-		}
+			// Print deployment names
+			for _, deployment := range deployments.Items {
+				fmt.Fprintf(w, "Deployment: %s\n", deployment.Name)
+			}
+		} else {
+			// List deployments in the specified namespace
+			deployments, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error listing deployments in namespace %s: %s", namespace, err.Error()), http.StatusInternalServerError)
+				return
+			}
 
-		// Print deployment names
-		for _, deployment := range deployments.Items {
-			fmt.Fprintf(w, "Deployment: %s\n", deployment.Name)
+			// Print deployment names
+			for _, deployment := range deployments.Items {
+				fmt.Fprintf(w, "Deployment: %s\n", deployment.Name)
+			}
 		}
 	})
 
