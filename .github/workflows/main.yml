@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_TAG: ${{ secrets.DOCKER_USERNAME }}/k8s-dash:$(date +%s)
+      IMAGE_TAG: ${{ secrets.DOCKER_USERNAME }}/k8s-dash:${{ github.run_number }}-$(date +%s)
 
     steps:
     - uses: actions/checkout@v4
