@@ -10,6 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      IMAGE_TAG: ${{ secrets.DOCKER_USERNAME }}/${{ github.repository }}:${{ github.sha }}
+
     steps:
     - uses: actions/checkout@v4
 
@@ -22,26 +25,22 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-
     - name: Get repository name
       id: repo_name
       run: echo "::set-output name=name::$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)"
 
     - name: Build Docker image
-      id: docker_build
-      env:
-        IMAGE_TAG: ${{ secrets.DOCKER_USERNAME }}/${{ steps.repo_name.outputs.name }}:${{ github.sha }}
       run: |
         docker buildx build --platform linux/amd64,linux/arm64 --push -t $IMAGE_TAG .
-        echo "::set-env name=IMAGE_TAG::$IMAGE_TAG"
+        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
     - name: Scan Docker image with Trivy
       uses: aquasecurity/trivy-action@0.20.0
       with:
-        image-ref: ${{ secrets.DOCKER_USERNAME }}/${{ steps.repo_name.outputs.name }}:${{ github.sha }}
+        image-ref: $IMAGE_TAG
 
     - name: Push Docker image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ steps.repo_name.outputs.name }}:${{ github.sha }}
+      run: docker push $IMAGE_TAG
 
     - name: Print the image tag
-      run: echo "Docker image tag is ${{ env.IMAGE_TAG }}"
+      run: echo "Docker image tag is $IMAGE_TAG"
