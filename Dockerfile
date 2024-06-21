@@ -17,7 +17,6 @@ ENV KUBECONFIG=/home/app/.kube/config
 
 EXPOSE 8080
 
-RUN adduser -D app
-USER app
+USER 1000:1000
 
 ENTRYPOINT ["/app/main"]
