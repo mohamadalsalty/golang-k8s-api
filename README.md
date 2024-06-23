@@ -1,6 +1,6 @@
 # Golang Kubernetes API
 
-Este é um projeto simples em Golang para criar um api básico que lista informações sobre um cluster Kubernetes usando a API HTTP.
+Este é um projeto simples em Golang para criar um API básico que lista informações sobre um cluster Kubernetes usando a API HTTP.
 
 ## Funcionalidades
 
@@ -20,21 +20,39 @@ Este é um projeto simples em Golang para criar um api básico que lista informa
 ## Instalação
 
 1. Clone o repositório
-
-
 2. Construa o projeto:
 
-   ```
-   go build -o k8s-api
-   ```
+   '''
+   make build
+   '''
 
-3. Configure as variáveis de ambiente e execute a api:
+3. Configure as variáveis de ambiente no arquivo `.env`:
 
-   ```
-   export K8S_API_HOST=https://<ip-do-k8s>:<porta>
-   export K8S_TOKEN_PATH=/caminho/para/seu/token.txt
-   ./k8s-api
-   ```
+   '''
+   K8S_API_HOST=https://<ip-do-k8s>:<porta>
+   K8S_TOKEN=<SEU_TOKEN>
+   '''
 
-   A api estará disponível em `http://localhost:8080`.
+4. Execute a API:
 
+   '''
+   make run
+   '''
+
+   A API estará disponível em `http://localhost:8080`.
+
+## Testes
+
+Para executar os testes, utilize o seguinte comando:
+
+'''
+make test
+'''
+
+## Limpeza
+
+Para limpar o diretório de compilação, utilize o seguinte comando:
+
+'''
+make clean
+'''
