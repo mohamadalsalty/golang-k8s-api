@@ -22,22 +22,22 @@ Este é um projeto simples em Golang para criar um API básico que lista informa
 1. Clone o repositório
 2. Construa o projeto:
 
-   '''
+   ```
    make build
-   '''
+   ```
 
 3. Configure as variáveis de ambiente no arquivo `.env`:
 
-   '''
+   ```
    K8S_API_HOST=https://<ip-do-k8s>:<porta>
    K8S_TOKEN=<SEU_TOKEN>
-   '''
+   ```
 
 4. Execute a API:
 
-   '''
+   ```
    make run
-   '''
+   ```
 
    A API estará disponível em `http://localhost:8080`.
 
@@ -45,14 +45,14 @@ Este é um projeto simples em Golang para criar um API básico que lista informa
 
 Para executar os testes, utilize o seguinte comando:
 
-'''
+```
 make test
-'''
+```
 
 ## Limpeza
 
 Para limpar o diretório de compilação, utilize o seguinte comando:
 
-'''
+```
 make clean
-'''
+```
