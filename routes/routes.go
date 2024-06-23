@@ -11,4 +11,6 @@ func SetupRoutes() {
 	http.HandleFunc("/nodes", handlers.NodesHandler)
 	http.HandleFunc("/pods/", handlers.PodsHandler)
 	http.HandleFunc("/deployments/", handlers.DeploymentsHandler)
+	http.HandleFunc("/replicasets/", handlers.ReplicaSetHandler)
+
 }

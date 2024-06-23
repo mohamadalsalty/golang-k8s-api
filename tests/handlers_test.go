@@ -1,5 +1,3 @@
-// tests/handlers_test.go
-
 package tests
 
 import (
@@ -15,14 +13,11 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	// Load environment variables from .env file
 	err := godotenv.Load()
 	if err != nil {
-		// Handle error loading .env file
 		panic(err)
 	}
 
-	// Run tests
 	exitVal := m.Run()
 
 	os.Exit(exitVal)
@@ -43,7 +38,6 @@ func TestClusterInfoHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	// Use regular expression to match anything after "Name: " and "Version: "
 	expectedPattern := `Cluster Info:\n\s+Name: .*\n\s+Version: .*\n`
 	matched, err := regexp.MatchString(expectedPattern, rr.Body.String())
 	if err != nil {
@@ -73,7 +67,6 @@ func TestNodesHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	// Add more assertions for the NodesHandler response if needed
 }
 
 func TestPodsHandler(t *testing.T) {
@@ -92,7 +85,6 @@ func TestPodsHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	// Add more assertions for the PodsHandler response if needed
 }
 
 func TestNamespacesHandler(t *testing.T) {
@@ -111,7 +103,6 @@ func TestNamespacesHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	// Add more assertions for the NamespacesHandler response if needed
 }
 
 func TestDeploymentsHandler(t *testing.T) {
@@ -130,5 +121,22 @@ func TestDeploymentsHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	// Add more assertions for the DeploymentsHandler response if needed
+}
+
+func TestReplicaSetsHandler(t *testing.T) {
+	req, err := http.NewRequest("GET", "/replicasets/", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(handlers.DeploymentsHandler)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+
 }
