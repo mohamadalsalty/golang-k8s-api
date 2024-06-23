@@ -7,11 +7,10 @@ import (
 	"net/http"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"k8s.io/client-go/kubernetes"
 )
 
-func NamespacesHandler(w http.ResponseWriter, r *http.Request) {
+func ReplicaSetHandler(w http.ResponseWriter, r *http.Request) {
 	config, err := config.GetKubernetesConfig()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error creating client config: %s", err.Error()), http.StatusInternalServerError)
@@ -23,14 +22,11 @@ func NamespacesHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error creating clientset: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
+	namespace := r.URL.Path[len("/replicasets/"):]
 
-	namespaces, err := clientset.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Error listing namespaces: %s", err.Error()), http.StatusInternalServerError)
-		return
+	replicasets, err := clientset.AppsV1().ReplicaSets(namespace).List(context.TODO(), metav1.ListOptions{})
+	for _, replicaset := range replicasets.Items {
+		fmt.Fprintf(w, "Replicaset: %s\n", replicaset.Name)
 	}
-
-	for _, ns := range namespaces.Items {
-		fmt.Fprintf(w, "Namespace: %s\n", ns.Name)
-	}
+	print("HI")
 }
