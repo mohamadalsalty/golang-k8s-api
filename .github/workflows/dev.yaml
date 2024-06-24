@@ -1,7 +1,6 @@
 name: Deploy Dev
 
 on:
-  push:
   pull_request:
     branches: [ "main" ]
 
