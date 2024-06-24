@@ -6,7 +6,7 @@ import (
 )
 
 func SetupRoutes() {
-	http.HandleFunc("/clusterinfo", handlers.ClusterInfoHandler)
+	http.HandleFunc("/cluster-info", handlers.ClusterInfoHandler)
 	http.HandleFunc("/namespaces", handlers.NamespacesHandler)
 	http.HandleFunc("/nodes", handlers.NodesHandler)
 	http.HandleFunc("/pods/", handlers.PodsHandler)
