@@ -74,6 +74,7 @@ jobs:
 
     - name: Commit and push changes
       run: |
+        git add src/apps/golang-k8s-api/prod/values.yaml
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Update tag to ${{ github.sha }}"
