@@ -51,3 +51,21 @@ jobs:
         tag_name: ${{ steps.changelog.outputs.tag }}
         release_name: ${{ steps.changelog.outputs.tag }}
         body: ${{ steps.changelog.outputs.clean_changelog }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        repository: mohamadalsalty/apps-k8s-gitops
+        token: ${{ secrets.TARGET_REPO_PAT }}        
+
+    - name: Update values.yaml
+      run: |
+        sed -i 's/tag: ".*"/tag: "${{ github.sha }}"/g' src/apps/golang-k8s-api/prod/values.yaml
+
+    - name: Commit changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add src/apps/golang-k8s-api/dev/values.yaml
+        git commit -m "Update tag to ${{ github.sha }}"
+        git push              
