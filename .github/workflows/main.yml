@@ -62,10 +62,16 @@ jobs:
       run: |
         sed -i 's/tag: ".*"/tag: "${{ github.sha }}"/g' src/apps/golang-k8s-api/prod/values.yaml
 
-    - name: Commit changes
+    - name: Check for changes
+      id: git_diff
+      run: |
+        git add src/apps/golang-k8s-api/prod/values.yaml
+        git diff --quiet || echo "has_changes=true" >> $GITHUB_ENV
+
+    - name: Commit and push changes
+      if: env.has_changes == 'true'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add src/apps/golang-k8s-api/dev/values.yaml
         git commit -m "Update tag to ${{ github.sha }}"
-        git push              
+        git push
