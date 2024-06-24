@@ -37,7 +37,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        repository: mohamadalsalty/github-actions-cd
+        repository: mohamadalsalty/apps-k8s-gitops
         token: ${{ secrets.TARGET_REPO_PAT }}        
 
     - name: Update values.yaml
