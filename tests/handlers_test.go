@@ -140,3 +140,21 @@ func TestReplicaSetsHandler(t *testing.T) {
 	}
 
 }
+
+func TestDaemonSets(t *testing.T) {
+	req, err := http.NewRequest("GET", "/daemonsets/", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(handlers.DeploymentsHandler)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+
+}

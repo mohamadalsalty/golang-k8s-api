@@ -10,7 +10,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func ReplicaSetHandler(w http.ResponseWriter, r *http.Request) {
+func ReplicaSetsHandler(w http.ResponseWriter, r *http.Request) {
 	config, err := config.GetKubernetesConfig()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error creating client config: %s", err.Error()), http.StatusInternalServerError)
@@ -28,5 +28,4 @@ func ReplicaSetHandler(w http.ResponseWriter, r *http.Request) {
 	for _, replicaset := range replicasets.Items {
 		fmt.Fprintf(w, "Replicaset: %s\n", replicaset.Name)
 	}
-	print("HI")
 }

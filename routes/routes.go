@@ -6,11 +6,12 @@ import (
 )
 
 func SetupRoutes() {
-	http.HandleFunc("/cluster-info", handlers.ClusterInfoHandler)
+	http.HandleFunc("/clusterinfo", handlers.ClusterInfoHandler)
 	http.HandleFunc("/namespaces", handlers.NamespacesHandler)
 	http.HandleFunc("/nodes", handlers.NodesHandler)
 	http.HandleFunc("/pods/", handlers.PodsHandler)
 	http.HandleFunc("/deployments/", handlers.DeploymentsHandler)
-	http.HandleFunc("/replicasets/", handlers.ReplicaSetHandler)
+	http.HandleFunc("/replicasets/", handlers.ReplicaSetsHandler)
+	http.HandleFunc("/daemonsets/", handlers.DaemonSetsHandler)
 
 }
