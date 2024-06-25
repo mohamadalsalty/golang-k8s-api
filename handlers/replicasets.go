@@ -3,10 +3,14 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"k8s/pkg/config"
 	"net/http"
+	"strings"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s/helpers"
+	"k8s/models"
+	"k8s/pkg/config"
+
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -22,10 +26,26 @@ func ReplicaSetsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error creating clientset: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
-	namespace := r.URL.Path[len("/replicasets/"):]
 
-	replicasets, err := clientset.AppsV1().ReplicaSets(namespace).List(context.TODO(), metav1.ListOptions{})
-	for _, replicaset := range replicasets.Items {
-		fmt.Fprintf(w, "Replicaset: %s\n", replicaset.Name)
+	parts := strings.Split(r.URL.Path, "/")
+	var namespace string
+	if len(parts) >= 3 {
+		namespace = parts[2]
 	}
+
+	replicasets, err := clientset.AppsV1().ReplicaSets(namespace).List(context.TODO(), v1.ListOptions{})
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error listing ReplicaSets: %s", err.Error()), http.StatusInternalServerError)
+		return
+	}
+
+	var response models.ReplicaSetListResponse
+	for _, rs := range replicasets.Items {
+		replicaSet := models.ReplicaSet{
+			Name: rs.Name,
+		}
+		response.ReplicaSets = append(response.ReplicaSets, replicaSet)
+	}
+	helpers.JSONResponse(w, http.StatusOK, response)
+
 }

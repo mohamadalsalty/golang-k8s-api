@@ -3,10 +3,13 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"k8s/helpers"
 	"k8s/pkg/config"
 	"net/http"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s/models"
+
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -22,10 +25,21 @@ func DaemonSetsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error creating clientset: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
-	namespace := r.URL.Path[len("/daemonsets/"):]
 
-	daemonsets, err := clientset.AppsV1().DaemonSets(namespace).List(context.TODO(), metav1.ListOptions{})
-	for _, daemonset := range daemonsets.Items {
-		fmt.Fprintf(w, "Deployment: %s\n", daemonset.Name)
+	namespace := r.URL.Path[len("/daemonsets/"):]
+	daemonsets, err := clientset.AppsV1().DaemonSets(namespace).List(context.TODO(), v1.ListOptions{})
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error listing daemon sets: %s", err.Error()), http.StatusInternalServerError)
+		return
 	}
+
+	var response models.DaemonSetListResponse
+	for _, daemonset := range daemonsets.Items {
+		daemonSet := models.DaemonSet{
+			Name: daemonset.Name,
+		}
+		response.DaemonSets = append(response.DaemonSets, daemonSet)
+	}
+	helpers.JSONResponse(w, http.StatusOK, response)
+
 }

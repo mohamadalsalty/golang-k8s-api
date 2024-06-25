@@ -1,13 +1,18 @@
+// handlers/deployments_handler.go
+
 package handlers
 
 import (
 	"context"
 	"fmt"
+	"k8s/helpers"
 	"k8s/pkg/config"
 	"net/http"
 	"strings"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s/models"
+
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -24,21 +29,24 @@ func DeploymentsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract namespace from URL path, or set to empty string if not provided
 	parts := strings.Split(r.URL.Path, "/")
 	var namespace string
 	if len(parts) >= 3 {
 		namespace = parts[2]
 	}
 
-	deployments, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
+	deployments, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), v1.ListOptions{})
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error listing Deployments: %s", err.Error()), http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/plain")
+	var response models.DeploymentListResponse
 	for _, deployment := range deployments.Items {
-		fmt.Fprintf(w, "Deployment: %s\n", deployment.Name)
+		dep := models.Deployment{
+			Name: deployment.Name,
+		}
+		response.Deployments = append(response.Deployments, dep)
 	}
+	helpers.JSONResponse(w, http.StatusOK, response)
 }
