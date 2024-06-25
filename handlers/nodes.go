@@ -1,15 +1,16 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
-	"context"
+	"k8s/helpers"
+	"k8s/models"
+	"k8s/pkg/config"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-
-	"k8s/pkg/config"
 )
 
 func NodesHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +32,14 @@ func NodesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var response models.NodeListResponse
 	for _, node := range nodes.Items {
-		fmt.Fprintf(w, "Node: %s\n", node.Name)
+		nodeItem := models.Node{
+			Name: node.Name,
+		}
+		response.Nodes = append(response.Nodes, nodeItem)
 	}
+
+	helpers.JSONResponse(w, http.StatusOK, response)
+
 }

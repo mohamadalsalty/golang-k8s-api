@@ -1,10 +1,10 @@
 package tests
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"regexp"
 	"testing"
 
 	"github.com/joho/godotenv"
@@ -38,17 +38,18 @@ func TestClusterInfoHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	expectedPattern := `Cluster Info:\n\s+Name: .*\n\s+Version: .*\n`
-	matched, err := regexp.MatchString(expectedPattern, rr.Body.String())
+	var response handlers.ClusterInfoResponse
+	err = json.Unmarshal(rr.Body.Bytes(), &response)
 	if err != nil {
-		t.Fatalf("error matching regex: %v", err)
+		t.Fatalf("error unmarshalling JSON response: %v", err)
 	}
 
-	if !matched {
-		t.Errorf("handler returned unexpected body: got %v want match for pattern %v",
-			rr.Body.String(), expectedPattern)
+	if response.Name == "" {
+		t.Errorf("expected non-empty 'name' field in JSON response")
 	}
-
+	if response.Version == "" {
+		t.Errorf("expected non-empty 'version' field in JSON response")
+	}
 }
 
 func TestNodesHandler(t *testing.T) {

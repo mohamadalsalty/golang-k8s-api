@@ -2,11 +2,18 @@ package handlers
 
 import (
 	"fmt"
+	"k8s/helpers"
+	"k8s/models"
 	"k8s/pkg/config"
 	"net/http"
 
 	"k8s.io/client-go/kubernetes"
 )
+
+type ClusterInfoResponse struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
 
 func ClusterInfoHandler(w http.ResponseWriter, r *http.Request) {
 	config, err := config.GetKubernetesConfig()
@@ -27,7 +34,10 @@ func ClusterInfoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Cluster Info:\n")
-	fmt.Fprintf(w, "  Name: %s\n", info.String())
-	fmt.Fprintf(w, "  Version: %s\n", info.String())
+	response := models.ClusterInfoResponse{
+		Name:    info.String(),
+		Version: info.String(),
+	}
+
+	helpers.JSONResponse(w, http.StatusOK, response)
 }
