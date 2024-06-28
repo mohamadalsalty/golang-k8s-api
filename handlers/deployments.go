@@ -44,7 +44,10 @@ func DeploymentsHandler(w http.ResponseWriter, r *http.Request) {
 	var response models.DeploymentListResponse
 	for _, deployment := range deployments.Items {
 		dep := models.Deployment{
-			Name: deployment.Name,
+			Name:              deployment.Name,
+			Replicas:          *deployment.Spec.Replicas,
+			Image:             deployment.Spec.Template.Spec.Containers[0].Image,
+			AvailableReplicas: deployment.Status.AvailableReplicas,
 		}
 		response.Deployments = append(response.Deployments, dep)
 	}
